@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-client = Groq(api_key=os.getenv("MEFTEH"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 @app.route("/api/nutrition/recipes", methods=["POST"])
 def generate_nutrition_advice():

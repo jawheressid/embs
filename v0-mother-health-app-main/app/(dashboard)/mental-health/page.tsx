@@ -6,15 +6,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageCircle, Upload } from "lucide-react"
 import { MentalHealthChatbot } from "@/components/mental-health/chatbot"
 import { EmotionAnalyzer } from "@/components/mental-health/emotion-analyzer"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function MentalHealthPage() {
   const [activeTab, setActiveTab] = useState("chatbot")
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Santé Mentale</h1>
-        <p className="text-muted-foreground mt-2">Explorez votre bien-être mental avec nos outils IA avancés</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Santé Mentale</h1>
+          <p className="text-muted-foreground mt-2">Explorez votre bien-être mental avec nos outils IA avancés</p>
+        </div>
+        <Link href="/teen-space">
+          <Button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600">
+            Espace Ado
+          </Button>
+        </Link>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

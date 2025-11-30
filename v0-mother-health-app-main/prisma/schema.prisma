@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  createdAt DateTime @default(now())
+  
+  pet       Pet?
+  moodLogs  MoodLog[]
+  quests    Quest[]
+}
+
+model Pet {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String   @default("Bloom")
+  stage           String   @default("EGG") // EGG, BABY, CHILD, ADULT
+  evolutionTrack  String   @default("NEUTRAL") // NEUTRAL, SERENE, WISE, ENERGETIC
+  health          Int      @default(100)
+  happiness       Int      @default(50)
+  evolutionPoints Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}
+
+model MoodLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // SPARKLE (PHQ-9), ENERGY (GAD-7)
+  score     Int
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Quest {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // BREATHING, GRATITUDE, WORRY_DRAGON
+  status      String   @default("PENDING") // PENDING, COMPLETED
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+}
