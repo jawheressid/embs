@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Initialize Groq client with API key
-api_key = "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"
+api_key = ""
 print("Loaded Groq API key:", api_key)
 
 client = Groq(api_key=api_key)
