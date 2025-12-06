@@ -2,30 +2,42 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from groq import Groq
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+# Initialize Groq client with API key
+api_key = "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"
+print("Loaded Groq API key:", api_key)
+
+client = Groq(api_key=api_key)
 
 @app.route("/api/nutrition/recipes", methods=["POST"])
 def generate_nutrition_advice():
     try:
         data = request.get_json(force=True)
+
         user_query = data.get("query", "").strip()
         conversation_history = data.get("conversationHistory", [])
 
         if not user_query:
-            return jsonify({"response": "Pouvez-vous préciser votre question sur votre régime ou vos ingrédients."}), 400
+            return jsonify({
+                "response": "Pouvez-vous préciser votre question sur votre régime ou vos ingrédients."
+            }), 400
 
         system_prompt = (
-            "Remarque importante : ecrit de maniere professionnelle et bienveillante. sans emoji. sans tiret successif. et sous forme de paragraphe. "
-            "ne pas trop détaillé. "
-            "Tu es un nutritionniste expert et bienveillant. "
-            "Ton rôle est d’analyser le régime alimentaire de l’utilisateur et de lui proposer un plan ou des recettes équilibrées selon ses objectifs et les ingrédients disponibles. "
-            "Exprime-toi en français clair et structuré, avec des conseils pratiques et bienveillants."
+            "Remarque importante : ecrit de maniere professionnelle et bienveillante. sans emoji. "
+            "sans tiret successif. et sous forme de paragraphe. ne pas trop détaillé. "
+            "Tu es un nutritionniste expert et bienveillant. Ton rôle est d’analyser le régime alimentaire "
+            "de l’utilisateur et de lui proposer un plan ou des recettes équilibrées selon ses objectifs et "
+            "les ingrédients disponibles. Exprimes-toi en français clair, structuré et bienveillant."
         )
 
+        # Build message history
         messages = [{"role": "system", "content": system_prompt}]
 
         for msg in conversation_history:
@@ -34,6 +46,7 @@ def generate_nutrition_advice():
 
         messages.append({"role": "user", "content": user_query})
 
+        # Send request to Groq
         completion = client.chat.completions.create(
             model="openai/gpt-oss-20b",
             messages=messages,
@@ -48,14 +61,16 @@ def generate_nutrition_advice():
         return jsonify({"response": response_text}), 200
 
     except Exception as e:
-        print("Erreur serveur:", e)
+        print("Erreur serveur :", e)
         return jsonify({
             "response": (
                 "Je n’ai pas pu générer de réponse pour le moment. "
-                "Voici un conseil simple : privilégiez les aliments riches en fibres, buvez beaucoup d’eau et évitez les produits trop sucrés."
+                "Voici un conseil simple : privilégiez les aliments riches en fibres, buvez beaucoup d’eau "
+                "et évitez les produits trop sucrés."
             )
         }), 500
 
+
 if __name__ == "__main__":
-    print("Serveur Flask du chatbot nutritionniste en cours d’exécution sur http://127.0.0.1:3000")
+    print("Serveur Flask du chatbot nutritionniste en cours d’exécution sur http://127.0.0.1:9000")
     app.run(host="0.0.0.0", port=9000, debug=True)

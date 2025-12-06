@@ -28,7 +28,8 @@ vectorstore = get_vectorstore()
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
 # Initialiser le modèle Groq
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GROQ_API_KEY = "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"
+print("Loaded Groq API key:", GROQ_API_KEY)
 if not GROQ_API_KEY:
     raise RuntimeError("GROQ_API_KEY n'est pas défini dans l'environnement (.env)")
 

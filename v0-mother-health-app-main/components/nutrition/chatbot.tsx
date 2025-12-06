@@ -52,6 +52,7 @@ export function NutritionChatbot() {
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setLoading(true)
+    console.log("Sending nutrition request to:", BACKEND_URL)
 
     try {
       const url = `${BACKEND_URL.replace(/\/$/, "")}/api/nutrition/recipes`
